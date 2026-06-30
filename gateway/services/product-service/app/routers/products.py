@@ -12,6 +12,7 @@ from app.database import get_db
 
 from app import crud
 from app import schemas
+from app.security import require_admin
 
 router = APIRouter(
 
@@ -36,7 +37,9 @@ def create_product(
 
     product: schemas.ProductCreate,
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+
+    current_user = Depends(require_admin)
 
 ):
 
@@ -58,6 +61,35 @@ def get_products(
 ):
 
     return crud.get_products(db)
+
+
+@router.get(
+    "/catalog",
+    response_model=list[schemas.ProductResponse]
+)
+def product_catalog(
+    search: str | None = None,
+    category: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    sort: str = "id",
+    order: str = "asc",
+    page: int = 1,
+    size: int = 10,
+    db: Session = Depends(get_db)
+):
+
+    return crud.get_catalog(
+        db,
+        search,
+        category,
+        min_price,
+        max_price,
+        sort,
+        order,
+        page,
+        size
+    )
 
 
 @router.get(
@@ -137,7 +169,8 @@ def get_product(
 def update_product(
     product_id: int,
     product: schemas.ProductUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
 
     updated_product = crud.update_product(
@@ -161,7 +194,8 @@ def update_product(
 )
 def delete_product(
     product_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
 
     deleted = crud.delete_product(

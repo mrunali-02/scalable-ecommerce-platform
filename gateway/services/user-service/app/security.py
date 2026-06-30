@@ -49,6 +49,8 @@ def get_current_user(
 
         email = payload.get("sub")
 
+        role = payload.get("role")
+
         if email is None:
             raise credentials_exception
 

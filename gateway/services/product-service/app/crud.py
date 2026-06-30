@@ -1,4 +1,7 @@
 # CRUD operations
+from sqlalchemy import and_
+from sqlalchemy import asc
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from app import models
@@ -140,4 +143,90 @@ def get_products_by_category(
             models.Product.category.ilike(category)
         )
         .all()
+    )
+
+
+def get_catalog(
+    db: Session,
+    search: str | None,
+    category: str | None,
+    min_price: float | None,
+    max_price: float | None,
+    sort: str,
+    order: str,
+    page: int,
+    size: int
+):
+
+    query = db.query(models.Product)
+
+    if search:
+
+        query = query.filter(
+            models.Product.name.ilike(
+                f"%{search}%"
+            )
+        )
+
+    if category:
+
+        query = query.filter(
+            models.Product.category.ilike(
+                category
+            )
+        )
+
+    if min_price is not None:
+
+        query = query.filter(
+            models.Product.price >= min_price
+        )
+
+    if max_price is not None:
+
+        query = query.filter(
+            models.Product.price <= max_price
+        )
+
+    sortable = {
+
+        "price": models.Product.price,
+
+        "name": models.Product.name,
+
+        "stock": models.Product.stock,
+
+        "created_at": models.Product.created_at
+
+    }
+
+    column = sortable.get(
+        sort,
+        models.Product.id
+    )
+
+    if order.lower() == "desc":
+
+        query = query.order_by(
+            desc(column)
+        )
+
+    else:
+
+        query = query.order_by(
+            asc(column)
+        )
+
+    offset = (page - 1) * size
+
+    return (
+
+        query
+
+        .offset(offset)
+
+        .limit(size)
+
+        .all()
+
     )

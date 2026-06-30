@@ -18,3 +18,9 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
 
     phone = Column(String)
+
+    role = Column(
+        String,
+        nullable=False,
+        default="CUSTOMER"
+    )
