@@ -38,3 +38,14 @@ def create_product(
 def get_products(db: Session):
 
     return db.query(models.Product).all()
+
+
+def get_product_by_id(
+    db: Session,
+    product_id: int
+):
+    return (
+        db.query(models.Product)
+        .filter(models.Product.id == product_id)
+        .first()
+    )

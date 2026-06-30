@@ -1,6 +1,7 @@
 # Products endpoints
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import HTTPException
 from fastapi import status
 
 from sqlalchemy.orm import Session
@@ -55,3 +56,26 @@ def get_products(
 ):
 
     return crud.get_products(db)
+
+
+@router.get(
+    "/{product_id}",
+    response_model=schemas.ProductResponse
+)
+def get_product(
+    product_id: int,
+    db: Session = Depends(get_db)
+):
+
+    product = crud.get_product_by_id(
+        db,
+        product_id
+    )
+
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
+
+    return product
