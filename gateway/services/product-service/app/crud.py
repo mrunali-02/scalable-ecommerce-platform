@@ -77,3 +77,37 @@ def update_product(
     db.refresh(db_product)
 
     return db_product
+
+
+def delete_product(
+    db: Session,
+    product_id: int
+):
+
+    product = get_product_by_id(
+        db,
+        product_id
+    )
+
+    if product is None:
+        return False
+
+    db.delete(product)
+
+    db.commit()
+
+    return True
+
+
+def search_products(
+    db: Session,
+    name: str
+):
+
+    return (
+        db.query(models.Product)
+        .filter(
+            models.Product.name.ilike(f"%{name}%")
+        )
+        .all()
+    )
