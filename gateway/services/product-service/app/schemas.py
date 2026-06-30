@@ -18,6 +18,10 @@ class ProductCreate(BaseModel):
     image_url: str
 
 
+class ProductUpdate(ProductCreate):
+    pass
+
+
 class ProductResponse(BaseModel):
 
     id: int

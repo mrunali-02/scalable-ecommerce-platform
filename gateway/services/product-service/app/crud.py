@@ -49,3 +49,31 @@ def get_product_by_id(
         .filter(models.Product.id == product_id)
         .first()
     )
+
+
+def update_product(
+    db: Session,
+    product_id: int,
+    product: schemas.ProductUpdate
+):
+
+    db_product = get_product_by_id(
+        db,
+        product_id
+    )
+
+    if db_product is None:
+        return None
+
+    db_product.name = product.name
+    db_product.description = product.description
+    db_product.price = product.price
+    db_product.stock = product.stock
+    db_product.category = product.category
+    db_product.image_url = product.image_url
+
+    db.commit()
+
+    db.refresh(db_product)
+
+    return db_product
