@@ -111,3 +111,19 @@ def search_products(
         )
         .all()
     )
+
+
+def get_products_paginated(
+    db: Session,
+    page: int,
+    size: int
+):
+
+    offset = (page - 1) * size
+
+    return (
+        db.query(models.Product)
+        .offset(offset)
+        .limit(size)
+        .all()
+    )

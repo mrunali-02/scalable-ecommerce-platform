@@ -76,6 +76,23 @@ def search_products(
 
 
 @router.get(
+    "/page",
+    response_model=list[schemas.ProductResponse]
+)
+def paginated_products(
+    page: int = 1,
+    size: int = 10,
+    db: Session = Depends(get_db)
+):
+
+    return crud.get_products_paginated(
+        db,
+        page,
+        size
+    )
+
+
+@router.get(
     "/{product_id}",
     response_model=schemas.ProductResponse
 )
