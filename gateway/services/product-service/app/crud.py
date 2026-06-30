@@ -127,3 +127,17 @@ def get_products_paginated(
         .limit(size)
         .all()
     )
+
+
+def get_products_by_category(
+    db: Session,
+    category: str
+):
+
+    return (
+        db.query(models.Product)
+        .filter(
+            models.Product.category.ilike(category)
+        )
+        .all()
+    )
