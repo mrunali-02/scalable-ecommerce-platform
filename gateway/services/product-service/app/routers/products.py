@@ -44,3 +44,14 @@ def create_product(
         product
 
     )
+
+
+@router.get(
+    "",
+    response_model=list[schemas.ProductResponse]
+)
+def get_products(
+    db: Session = Depends(get_db)
+):
+
+    return crud.get_products(db)

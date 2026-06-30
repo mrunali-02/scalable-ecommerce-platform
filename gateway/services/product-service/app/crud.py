@@ -33,3 +33,8 @@ def create_product(
     db.refresh(db_product)
 
     return db_product
+
+
+def get_products(db: Session):
+
+    return db.query(models.Product).all()
