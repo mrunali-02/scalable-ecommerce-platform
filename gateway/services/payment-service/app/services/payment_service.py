@@ -5,6 +5,8 @@ from app.clients.order_client import (
     update_order_status
 )
 
+from app.message_broker import publish
+
 from app import crud
 
 
@@ -51,11 +53,17 @@ class PaymentService:
         )
 
         update_order_status(
-
             order_id,
-
             "PAID"
+        )
 
+        publish(
+            {
+                "user_id": order["user_id"],
+                "subject":"Payment Successful",
+                "message":f"Order {order_id} paid.",
+                "type":"PAYMENT_SUCCESS"
+            }
         )
 
         return payment

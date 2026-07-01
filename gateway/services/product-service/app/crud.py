@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session
 
 from app import models
 from app import schemas
+from app.cache import get_cache
+from app.cache import set_cache
+from app.cache import delete_cache
 
 
 def create_product(
@@ -32,6 +35,7 @@ def create_product(
     db.add(db_product)
 
     db.commit()
+    delete_cache("products")
 
     db.refresh(db_product)
 
@@ -39,8 +43,26 @@ def create_product(
 
 
 def get_products(db: Session):
+    cached = get_cache("products")
+    if cached:
+        return cached
 
-    return db.query(models.Product).all()
+    products = db.query(models.Product).all()
+
+    set_cache(
+        "products",
+        [
+            {
+                "id": p.id,
+                "name": p.name,
+                "price": p.price,
+                "stock": p.stock
+            }
+            for p in products
+        ]
+    )
+
+    return products
 
 
 def get_product_by_id(
@@ -76,6 +98,7 @@ def update_product(
     db_product.image_url = product.image_url
 
     db.commit()
+    delete_cache("products")
 
     db.refresh(db_product)
 
@@ -98,6 +121,7 @@ def delete_product(
     db.delete(product)
 
     db.commit()
+    delete_cache("products")
 
     return True
 

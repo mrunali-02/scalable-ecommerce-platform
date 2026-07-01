@@ -8,6 +8,7 @@ import app.models
 from app.routers.payments import (
     router as payment_router
 )
+from app.health import router as health_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -17,6 +18,7 @@ app = FastAPI(
 )
 
 app.include_router(payment_router)
+app.include_router(health_router)
 
 
 @app.get("/")

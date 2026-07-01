@@ -6,6 +6,7 @@ from app.database import engine
 import app.models
 
 from app.routers.orders import router as order_router
+from app.health import router as health_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -15,6 +16,7 @@ app = FastAPI(
 )
 
 app.include_router(order_router)
+app.include_router(health_router)
 
 
 @app.get("/")
