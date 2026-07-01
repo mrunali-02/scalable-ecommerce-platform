@@ -2,24 +2,24 @@ from fastapi import FastAPI
 
 from app.database import Base
 from app.database import engine
-from app.routers.cart import router as cart_router
 
 import app.models
+
+from app.routers.orders import router as order_router
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="Cart Service",
+    title="Order Service",
     version="1.0.0"
 )
 
-app.include_router(cart_router)
+app.include_router(order_router)
 
 
 @app.get("/")
 def root():
 
     return {
-        "message": "Cart Service Running"
+        "message": "Order Service Running"
     }
-

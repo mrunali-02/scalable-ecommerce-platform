@@ -68,6 +68,9 @@ def login(
     token = create_access_token(
         {
             "sub": db_user.email,
+
+            "user_id": db_user.id,
+
             "role": db_user.role
         }
     )
