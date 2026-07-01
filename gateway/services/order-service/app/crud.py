@@ -82,3 +82,15 @@ def update_order_status(
 
     return order
 
+
+def get_orders_by_user(
+    db,
+    user_id: int
+):
+    return (
+        db.query(models.Order)
+        .filter(models.Order.user_id == user_id)
+        .all()
+    )
+
+

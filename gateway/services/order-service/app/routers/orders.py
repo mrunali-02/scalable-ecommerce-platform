@@ -15,6 +15,17 @@ router = APIRouter(
 )
 
 
+@router.get(
+    "",
+    response_model=list[OrderResponse]
+)
+def get_user_orders(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    return crud.get_orders_by_user(db, current_user["user_id"])
+
+
 @router.post(
     "/checkout",
     response_model=OrderResponse
